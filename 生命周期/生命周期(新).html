@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>react-study</title>
+</head>
+
+<body>
+  <div id='app'></div>
+  <script crossorigin src='https://unpkg.com/react@17/umd/react.development.js'></script>
+  <script crossorigin src='https://unpkg.com/react-dom@17/umd/react-dom.development.js'></script>
+  <script src='https://unpkg.com/babel-standalone@6/babel.min.js'></script>
+</body>
+
+</html>
+<script type='text/babel'>
+  class Life extends React.Component {
+    constructor(props) {
+      console.log('Life---constructor');
+      super(props)
+    }
+    // UNSAFE_componentWillMount() {
+    //   console.log('Life---componentWillMount');
+    // }
+    static getDerivedStateFromProps(props,state){//挂载和更新，很少使用，代码冗余
+      console.log('Life---getDerivedStateFromProps',props,state);
+      // 可以返回状态对象 若state的值完全取决与props
+      // return props
+      return null
+    }
+    getSnapshotBeforeUpdate(){//更新 记录更新完成前的一些东西 浏览器高度这种
+      console.log('Life---getSnapshotBeforeUpdate');
+      return '记录更新完成前的一些东西'
+    }
+    componentDidMount() {
+      console.log('Life---componentDidMount');
+    }
+    // UNSAFE_componentWillUnmount() {
+    //   console.log('Life---componentWillUnmount');
+    // }
+    shouldComponentUpdate() {//setState 控制组件更新的阀门
+      console.log('Life---shouldComponentUpdate');
+      return true
+    }
+    // UNSAFE_componentWillUpdate() {//forceUpdate 强制更新 不改状态
+    //   console.log('Life---componentWillUpdate');
+    // }
+    componentDidUpdate(preProps,preState,snapShopValue) {//在render之后 已经更新完成
+      console.log('Life---componentDidUpdate',preProps,preState,snapShopValue);
+    }
+    render() {
+      console.log('Life---render');
+      const { count } = this.state
+      return (
+        <div>
+          <h2>当前求和{count}</h2>
+          <button onClick={this.add}>点我+1</button>
+          <button onClick={this.deth}>卸载组件</button>
+          <button onClick={this.force}>强制更新</button>
+        </div>
+      )
+    }
+    state = { count: 0 }
+    add = () => {
+      const { count } = this.state
+      this.setState({ count: count + 1 })
+    }
+    deth = () => {
+      ReactDOM.unmountComponentAtNode(document.getElementById('app'))
+    }
+    force = () => {
+      // 不更改状态中的数据 强制更新页面
+      this.forceUpdate()
+    }
+  }
+  ReactDOM.render(<Life count={100}/>, document.getElementById('app'))
+  // ReactDOM.render(<A />, document.getElementById('app'))
+</script>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>react-study</title>
+</head>
+
+<body>
+  <div id='app'></div>
+  <script crossorigin src='https://unpkg.com/react@16.8/umd/react.development.js'></script>
+  <script crossorigin src='https://unpkg.com/react-dom@16.8/umd/react-dom.development.js'></script>
+  <script src='https://unpkg.com/babel-standalone@6/babel.min.js'></script>
+</body>
+
+</html>
+<script type='text/babel'>
+
+  /* 
+    1 初始化阶段
+    constructor->componentWillMount->render->componentDidMount(初始化，参照vue mounted)
+    2 更新阶段（setState）
+    shouldComponentUpdate->componentWillUpdate->render->componentDidUpdate
+    3 卸载组件 ReactDOM.unmountComponentAtNode
+    componentWillUnmount(销毁，vue destoryed)
+  */
+
+
+  class Life extends React.Component {
+    constructor(props) {
+      console.log('Life---constructor');
+      super(props)
+    }
+    componentWillMount() {
+      console.log('Life---componentWillMount');
+    }
+    componentDidMount() {
+      console.log('Life---componentDidMount');
+    }
+    componentWillUnmount() {
+      console.log('Life---componentWillUnmount');
+    }
+    shouldComponentUpdate() {//setState 控制组件更新的阀门
+      console.log('Life---shouldComponentUpdate');
+      return true
+    }
+    componentWillUpdate() {//forceUpdate 强制更新 不改状态
+      console.log('Life---componentWillUpdate');
+    }
+    componentDidUpdate() {//在render之后 已经更新完成
+      console.log('Life---componentDidUpdate');
+    }
+    render() {
+      console.log('Life---render');
+      const { count } = this.state
+      return (
+        <div>
+          <h2>当前求和{count}</h2>
+          <button onClick={this.add}>点我+1</button>
+          <button onClick={this.deth}>卸载组件</button>
+          <button onClick={this.force}>强制更新</button>
+        </div>
+      )
+    }
+
+
+
+    state = { count: 0 }
+    add = () => {
+      const { count } = this.state
+      this.setState({ count: count + 1 })
+    }
+    deth = () => {
+      ReactDOM.unmountComponentAtNode(document.getElementById('app'))
+    }
+    force = () => {
+      // 不更改状态中的数据 强制更新页面
+      this.forceUpdate()
+    }
+  }
+  // 父子组件的生命周期
+  class A extends React.Component {
+    render() {
+      const { carName } = this.state
+      return (
+        <div>
+          <div>我是A组件</div>
+          <button onClick={this.changeCar}>换车</button>
+          <B carName={carName} />
+        </div>
+      )
+    }
+
+    state = { carName: '奔驰' }
+    changeCar = () => {
+      this.setState({ carName: '奥迪' })
+    }
+  }
+  class B extends React.Component {
+    componentWillReceiveProps() {//第一次接受props 不走这。更新重新接受才走
+      console.log('B---componentWillReceiveProps');
+    }
+    shouldComponentUpdate() {//setState 控制组件更新的阀门
+      console.log('B---shouldComponentUpdate');
+      return true
+    }
+    componentWillUpdate() {//forceUpdate 强制更新 不改状态
+      console.log('B---componentWillUpdate');
+    }
+    componentDidUpdate() {//在render之后 已经更新完成
+      console.log('B---componentDidUpdate');
+    }
+    render() {
+      console.log('B---render');
+      return (
+        <div>我是B组件{this.props.carName}</div>
+      )
+    }
+  }
+  // ReactDOM.render(<Life />, document.getElementById('app'))
+  ReactDOM.render(<A />, document.getElementById('app'))
+</script>
