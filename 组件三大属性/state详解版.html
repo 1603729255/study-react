@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>react-study</title>
+</head>
+
+<body>
+  <div id='app'></div>
+  <script crossorigin src='https://unpkg.com/react@16/umd/react.development.js'></script>
+  <script crossorigin src='https://unpkg.com/react-dom@16/umd/react-dom.development.js'></script>
+  <script src='https://unpkg.com/babel-standalone@6/babel.min.js'></script>
+</body>
+
+</html>
+<script type='text/babel'>
+  class Weather extends React.Component {
+    // 构造器调用1次
+    constructor(props) {
+      super(props)
+      this.state = { isHot: false, wind: "微风 " }
+      this.changeWeather = this.changeWeather.bind(this)//bind 生成一个新的函数 修改this指向
+    }
+    
+    // render调用1（初始化）+n次
+    render() {
+      console.log(this);
+      const { isHot, wind } = this.state
+      // return <div onClick={changeWeather}>今天天气很{isHot ? '炎热' : '凉爽'},今天有雨</div> changeWeather在实例上面
+      return <div onClick={this.changeWeather}>今天天气很{isHot ? '炎热' : '凉爽'},{wind}</div>
+    }
+
+    // changeWeather放在哪里？-- Weather的原型对象上，供实例使用。
+    // 通过Weather实例调用changeWeather时，changeWeather中的this就是Weather实例
+    changeWeather() {
+      console.log('点击', this);//changeWeather不是实例调用，是onClick回调，this是undefind（局部严格模式，所以不是window）
+      //要取到正确的this
+      // 1.用bind 可以修改this的指向
+      // 2.绑定时用箭头函数（见实操版）
+      let isHot = this.state.isHot
+      this.setState({ isHot: !isHot })
+
+    }
+  }
+  // const w= new Weather()
+  // w.changeWeather()//通过实例调用 this是Weather实例对象
+  ReactDOM.render(<Weather />, document.getElementById('app'))
+
+</script>

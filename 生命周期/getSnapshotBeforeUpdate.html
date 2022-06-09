@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>react-study</title>
+</head>
+
+<body>
+  <div id='app'></div>
+  <script crossorigin src='https://unpkg.com/react@17/umd/react.development.js'></script>
+  <script crossorigin src='https://unpkg.com/react-dom@17/umd/react-dom.development.js'></script>
+  <script src='https://unpkg.com/babel-standalone@6/babel.min.js'></script>
+</body>
+<style>
+  .list {
+    width: 150px;
+    height: 150px;
+    overflow: auto;
+  }
+
+  .news {
+    height: 30px;
+  }
+
+</style>
+
+</html>
+<script type='text/babel'>
+  class News extends React.Component {
+    state = { newsArr: [] }
+    componentDidMount() {
+      setInterval(() => {
+        const { newsArr } = this.state
+        const news = '新闻' + (newsArr.length + 1)
+        this.setState({ newsArr: [news, ...newsArr] })
+      }, 1000)
+    }
+    getSnapshotBeforeUpdate() {
+      return this.refs.list.scrollHeight
+    }
+    componentDidUpdate(preProps,preState, height) {
+      this.refs.list.scrollTop += this.refs.list.scrollHeight - height
+    }
+    render() {
+      return (
+        <div className='list' ref="list">
+          {
+            this.state.newsArr.map((n, index) => {
+              return <div key={index} className="news">{n}</div>
+            })
+          }
+        </div>
+      )
+    }
+  }
+  ReactDOM.render(< News />, document.getElementById('app'))
+</script>
