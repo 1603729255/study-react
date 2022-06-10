@@ -12,7 +12,7 @@ export default class Item extends Component {
   }
   handleChange=(id)=>{
     return (event)=>{
-      console.log(id,event.target.checked);
+      // console.log(id,event.target.checked);
       this.props.updateTodoDone(id,event.target.checked)
     }
   }
